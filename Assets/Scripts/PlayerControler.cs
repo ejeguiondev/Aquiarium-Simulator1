@@ -104,7 +104,8 @@ public class PlayerControler : MonoBehaviour
                 velocity = direccion * walkSpeed;
                 playerCam.GetComponent<Animator>().SetBool("Walk", true);
                 playerCam.GetComponent<Animator>().SetBool("Run", false);
-            } else
+            }
+            else
             {
                 if (stamina < 0.01f)
                 {
@@ -148,7 +149,8 @@ public class PlayerControler : MonoBehaviour
                     stamina -= 0.01f;
                 counterStamina = 0;
             }
-        } else
+        }
+        else
         {
             counterStamina += 1 * Time.deltaTime;
             if (counterStamina > 0.05f)
@@ -170,74 +172,30 @@ public class PlayerControler : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(playerCam.transform.position, playerCam.transform.forward, out hit, rayDistance))
         {
-            if (hit.collider.GetComponent<ItemGrab>())
+            if (Input.GetKeyDown(KeyCode.E))
             {
-                string nameItem = hit.collider.GetComponent<ItemGrab>().Name;
-                textItem.text = nameItem;
-                textPressE.gameObject.SetActive(true);
-                if (Input.GetKeyDown(KeyCode.E))
-                {
-                    if (SecondItem.childCount == 1)
-                    {
-                        foreach (Transform trans in SecondItem.transform)
-                        {
-                            Transform item = Instantiate(trans, hit.point, Quaternion.identity);
-                            item.gameObject.AddComponent<Rigidbody>();
-                            Destroy(trans.gameObject);
-                        }
-
-                    }
-                    hit.collider.GetComponent<ItemGrab>().GrabItem(SecondItem);
-                    foreach (Transform trans in SecondItem.transform)
-                    {
-                        Destroy(trans.gameObject.GetComponent<Rigidbody>());
-                    }
-
-                }
-            } else if (hit.collider.GetComponent<ItemInteractable>())
-            {
-                string nameItem = hit.collider.GetComponent<ItemInteractable>().Name;
-                string useItem = hit.collider.GetComponent<ItemInteractable>().Use;
-                textItem.text = nameItem + " abre: " + useItem;
-                textPressE.gameObject.SetActive(true);
-                if (Input.GetKeyDown(KeyCode.E))
-                {
-                    hit.collider.GetComponent<ItemInteractable>().MoveObject();
-                }
-            } else if (hit.collider.GetComponent<RequireItem>())
-            {
-                string nameItem = hit.collider.GetComponent<RequireItem>().Name;
-                string Requirement = hit.collider.GetComponent<RequireItem>().Requirement;
-                textItem.text = nameItem + " requiere: " + Requirement;
-                textPressE.gameObject.SetActive(true);
-                if (Input.GetKeyDown(KeyCode.E))
-                {
-                    foreach(Transform trans in SecondItem.transform)
-                    {
-                        if (trans.GetComponent<ItemGrab>().Name == Requirement)
-                        {
-                            hit.collider.GetComponent<RequireItem>().MoveObject();
-                        }
-                    }
-
-                }
-
+                hit.collider.GetComponent<IInteractable>()?.Interact();
             }
+            Debug.DrawRay(playerCam.transform.position, playerCam.transform.forward * rayDistance, Color.red);
+            //string nameItem2 = hit.collider.GetComponent<IInteractable>()?.Name;
+            //string Requirement2 = hit.collider.GetComponent<IInteractable>()?.Requirement;
+            //textItem.text = nameItem2 + " requiere: " + Requirement2;
+            //textPressE.gameObject.SetActive(true);
 
+            /*
+         
+            if (Physics.Raycast(playerCam.transform.position, playerCam.transform.forward, out hit))
+            {
+                if (hit.collider.GetComponent<ItemGrab>() || hit.collider.GetComponent<ItemInteractable>() || hit.collider.GetComponent<RequireItem>() || hit.collider.GetComponent<Interactable>())
+                    Debug.Log("");
+                else
+                {
+                    textPressE.gameObject.SetActive(false);
+                    textItem.text = "";
+                }
+            }
+            */
         }
 
-        if (Physics.Raycast(playerCam.transform.position, playerCam.transform.forward, out hit))
-        {
-            if (hit.collider.GetComponent<ItemGrab>() || hit.collider.GetComponent<ItemInteractable>() || hit.collider.GetComponent<RequireItem>())
-                Debug.Log("");
-            else
-            {
-                textPressE.gameObject.SetActive(false);
-                textItem.text = "";
-            }
-        }
-
-        Debug.DrawRay(playerCam.transform.position, playerCam.transform.forward * rayDistance, Color.red);
     }
-
 }

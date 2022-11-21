@@ -16,6 +16,7 @@ public class Port : MonoBehaviour, IInteractable
         private set;
     }
 
+
     public Transform secondItem;
     public string NameReal;
     public string RequirementReal;
@@ -28,9 +29,10 @@ public class Port : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        foreach(Transform trans in secondItem)
+        GameObject currentItem = secondItem.parent.parent.GetComponent<PlayerControler>()?.currenItem;
+        if (currentItem != null)
         {
-            if (trans.GetComponent<IInteractable>()?.Name == Requirement)
+            if (currentItem.GetComponent<IInteractable>().Name == Requirement)
             {
                 GetComponent<Animator>().SetBool("Open", true);
             }

@@ -16,6 +16,7 @@ public class Palanca : MonoBehaviour, IInteractable
         private set;
     }
 
+
     public string NameReal;
     public string RequirementReal;
     public Animator Port;

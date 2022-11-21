@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
-public class Key : MonoBehaviour, IInteractable
+public class Grabable : MonoBehaviour, IInteractable
 {
     public string Name
     {
@@ -18,6 +19,7 @@ public class Key : MonoBehaviour, IInteractable
 
     public Rigidbody rb;
     public Transform secondItem;
+    public Sprite icon;
 
     public string NameReal;
     public string RequirementReal;
@@ -30,25 +32,22 @@ public class Key : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        if (secondItem.childCount == 1)
+        if (secondItem.childCount != 5)
         {
+            transform.position = new Vector3(0, 0, 0);
+            transform.rotation = new Quaternion(0, 0, 0, 0);
+            GameObject newKey = Instantiate(gameObject, secondItem);
+            Destroy(newKey.GetComponent<Rigidbody>());
+
+            Destroy(gameObject);
+
             foreach (Transform trans in secondItem)
             {
-                Transform item = Instantiate(trans, transform.position, Quaternion.identity);
-                item.gameObject.AddComponent<Rigidbody>();
-                Destroy(trans.gameObject);
+                Destroy(trans.gameObject.GetComponent<Rigidbody>());
             }
-
-        }
-        transform.position = new Vector3(0, 0, 0);
-        transform.rotation = new Quaternion(0, 0, 0, 0);
-        Instantiate(gameObject, secondItem);
-
-        Destroy(gameObject);
-
-        foreach (Transform trans in secondItem)
+        } else
         {
-            Destroy(trans.gameObject.GetComponent<Rigidbody>());
+            Debug.Log("sin espacio!");
         }
 
     }

@@ -33,6 +33,8 @@ public class PlayerControler : MonoBehaviour
 
     public GameObject[] arrayInventory;
     public GameObject currenItem;
+    public int numberItem = 0;
+    public int numberSlots = 5;
 
     // Start is called before the first frame update
     void Start()
@@ -60,17 +62,50 @@ public class PlayerControler : MonoBehaviour
                 lanter = true;
             }
         }
+
         if (Input.GetKeyDown(KeyCode.Q) && SecondItem.childCount > 0)
         {
-            foreach (Transform trans in SecondItem.transform)
+            if (currenItem != null)
             {
-                Transform item = Instantiate(trans, transform.position + transform.forward, Quaternion.identity);
+                GameObject item = Instantiate(currenItem.gameObject, transform.position + transform.forward, Quaternion.identity);
                 item.gameObject.AddComponent<Rigidbody>();
-                Destroy(trans.gameObject);
+
+                for (int i = 0; i < arrayInventory.Length; i++)
+                {
+                    arrayInventory[i] = null;
+                }
+
+                foreach (Transform trans in SecondItem.transform)
+                {
+                    if (trans.gameObject == currenItem)
+                    {
+                        trans.SetParent(SecondItem.parent);
+                        Destroy(trans.gameObject);
+                        break;
+                    }
+                }
+            }
+            
+        }
+
+        for (int i = 0; i < 5; i++)
+        {
+            if (Input.GetKeyDown((i + 1).ToString()))
+            {
+                numberItem = i;
+            }
+        }
+
+        for (int i = 0; i < arrayInventory.Length; i++)
+        {
+            if (arrayInventory[i] == arrayInventory[numberItem])
+            {
+                currenItem = arrayInventory[i];
             }
         }
 
         detectedItem();
+        orderInventory();
     }
 
     private void FixedUpdate()
@@ -191,6 +226,27 @@ public class PlayerControler : MonoBehaviour
                 textItem.text = "";
                 textPressE.gameObject.SetActive(false);
             }
+        }
+
+    }
+    void orderInventory()
+    {
+        for (int i = 0; i < SecondItem.childCount; i++)
+        {
+            if (SecondItem.GetChild(i).gameObject != currenItem)
+            {
+                SecondItem.GetChild(i).gameObject.SetActive(false);
+            } else
+            {
+                SecondItem.GetChild(i).gameObject.SetActive(true);
+            }
+
+            if (arrayInventory[i] == null)
+            {
+                GameObject item = SecondItem.GetChild(i).gameObject;
+                arrayInventory[i] = item;
+            }
+
         }
 
     }

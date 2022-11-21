@@ -31,11 +31,15 @@ public class PlayerControler : MonoBehaviour
     float stamina = 1;
     float counterStamina = 0;
 
+    public GameObject[] arrayInventory;
+    public GameObject currenItem;
+
     // Start is called before the first frame update
     void Start()
     {
         rotacionSensibility = 700f;
         rg = GetComponent<Rigidbody>();
+        arrayInventory = new GameObject[5];
 
         Cursor.lockState = CursorLockMode.Locked;
     }
@@ -62,8 +66,6 @@ public class PlayerControler : MonoBehaviour
             {
                 Transform item = Instantiate(trans, transform.position + transform.forward, Quaternion.identity);
                 item.gameObject.AddComponent<Rigidbody>();
-                Vector3 v3 = 1000 * transform.forward;
-                item.gameObject.GetComponent<Rigidbody>().AddForce(v3);
                 Destroy(trans.gameObject);
             }
         }
@@ -176,25 +178,19 @@ public class PlayerControler : MonoBehaviour
             {
                 hit.collider.GetComponent<IInteractable>()?.Interact();
             }
+            hit.collider.GetComponent<IInteractable>()?.UI(textItem, textPressE);
             Debug.DrawRay(playerCam.transform.position, playerCam.transform.forward * rayDistance, Color.red);
-            //string nameItem2 = hit.collider.GetComponent<IInteractable>()?.Name;
-            //string Requirement2 = hit.collider.GetComponent<IInteractable>()?.Requirement;
-            //textItem.text = nameItem2 + " requiere: " + Requirement2;
-            //textPressE.gameObject.SetActive(true);
 
-            /*
-         
-            if (Physics.Raycast(playerCam.transform.position, playerCam.transform.forward, out hit))
+        }
+
+        if (Physics.Raycast(playerCam.transform.position, playerCam.transform.forward, out hit))
+        {
+            IInteractable interactable = hit.collider.GetComponent<IInteractable>();
+            if (interactable == null)
             {
-                if (hit.collider.GetComponent<ItemGrab>() || hit.collider.GetComponent<ItemInteractable>() || hit.collider.GetComponent<RequireItem>() || hit.collider.GetComponent<Interactable>())
-                    Debug.Log("");
-                else
-                {
-                    textPressE.gameObject.SetActive(false);
-                    textItem.text = "";
-                }
+                textItem.text = "";
+                textPressE.gameObject.SetActive(false);
             }
-            */
         }
 
     }

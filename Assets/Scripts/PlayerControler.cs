@@ -49,6 +49,11 @@ public class PlayerControler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Space) && trigerGrounded.isGrounded)
+        {
+            rg.velocity = new Vector3(rg.velocity.x, jumpSpeed, rg.velocity.z);
+        }
+
         if (Input.GetKeyDown(KeyCode.F))
         {
             if (lanter == true)
@@ -165,11 +170,6 @@ public class PlayerControler : MonoBehaviour
             playerCam.GetComponent<Animator>().SetBool("Run", false);
             playerCam.GetComponent<Animator>().SetBool("Walk", false);
             run = false;
-        }
-
-        if (Input.GetKeyDown(KeyCode.Space) && trigerGrounded.isGrounded)
-        {
-            rg.velocity = new Vector3(rg.velocity.x, jumpSpeed, rg.velocity.z);
         }
 
         if (Input.GetKeyDown(KeyCode.LeftShift) && hor != 0 || Input.GetKeyDown(KeyCode.LeftShift) && ver != 0)

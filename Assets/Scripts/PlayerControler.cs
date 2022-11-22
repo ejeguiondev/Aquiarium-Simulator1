@@ -31,11 +31,17 @@ public class PlayerControler : MonoBehaviour
     float stamina = 1;
     float counterStamina = 0;
 
+    public GameObject[] arrayInventory;
+    public GameObject currenItem;
+    public int numberItem = 0;
+    public int numberSlots = 5;
+
     // Start is called before the first frame update
     void Start()
     {
         rotacionSensibility = 700f;
         rg = GetComponent<Rigidbody>();
+        arrayInventory = new GameObject[5];
 
         Cursor.lockState = CursorLockMode.Locked;
     }
@@ -43,6 +49,11 @@ public class PlayerControler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Space) && trigerGrounded.isGrounded)
+        {
+            rg.velocity = new Vector3(rg.velocity.x, jumpSpeed, rg.velocity.z);
+        }
+
         if (Input.GetKeyDown(KeyCode.F))
         {
             if (lanter == true)
@@ -56,19 +67,50 @@ public class PlayerControler : MonoBehaviour
                 lanter = true;
             }
         }
+
         if (Input.GetKeyDown(KeyCode.Q) && SecondItem.childCount > 0)
         {
-            foreach (Transform trans in SecondItem.transform)
+            if (currenItem != null)
             {
-                Transform item = Instantiate(trans, transform.position + transform.forward, Quaternion.identity);
+                GameObject item = Instantiate(currenItem.gameObject, transform.position + transform.forward, Quaternion.identity);
                 item.gameObject.AddComponent<Rigidbody>();
-                Vector3 v3 = 1000 * transform.forward;
-                item.gameObject.GetComponent<Rigidbody>().AddForce(v3);
-                Destroy(trans.gameObject);
+
+                for (int i = 0; i < arrayInventory.Length; i++)
+                {
+                    arrayInventory[i] = null;
+                }
+
+                foreach (Transform trans in SecondItem.transform)
+                {
+                    if (trans.gameObject == currenItem)
+                    {
+                        trans.SetParent(SecondItem.parent);
+                        Destroy(trans.gameObject);
+                        break;
+                    }
+                }
+            }
+            
+        }
+
+        for (int i = 0; i < 5; i++)
+        {
+            if (Input.GetKeyDown((i + 1).ToString()))
+            {
+                numberItem = i;
+            }
+        }
+
+        for (int i = 0; i < arrayInventory.Length; i++)
+        {
+            if (arrayInventory[i] == arrayInventory[numberItem])
+            {
+                currenItem = arrayInventory[i];
             }
         }
 
         detectedItem();
+        orderInventory();
     }
 
     private void FixedUpdate()
@@ -104,7 +146,8 @@ public class PlayerControler : MonoBehaviour
                 velocity = direccion * walkSpeed;
                 playerCam.GetComponent<Animator>().SetBool("Walk", true);
                 playerCam.GetComponent<Animator>().SetBool("Run", false);
-            } else
+            }
+            else
             {
                 if (stamina < 0.01f)
                 {
@@ -129,11 +172,6 @@ public class PlayerControler : MonoBehaviour
             run = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && trigerGrounded.isGrounded)
-        {
-            rg.velocity = new Vector3(rg.velocity.x, jumpSpeed, rg.velocity.z);
-        }
-
         if (Input.GetKeyDown(KeyCode.LeftShift) && hor != 0 || Input.GetKeyDown(KeyCode.LeftShift) && ver != 0)
             run = true;
         else if (Input.GetKeyUp(KeyCode.LeftShift) && hor != 0 || Input.GetKeyUp(KeyCode.LeftShift) && ver != 0)
@@ -148,7 +186,8 @@ public class PlayerControler : MonoBehaviour
                     stamina -= 0.01f;
                 counterStamina = 0;
             }
-        } else
+        }
+        else
         {
             counterStamina += 1 * Time.deltaTime;
             if (counterStamina > 0.05f)
@@ -170,74 +209,45 @@ public class PlayerControler : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(playerCam.transform.position, playerCam.transform.forward, out hit, rayDistance))
         {
-            if (hit.collider.GetComponent<ItemGrab>())
+            if (Input.GetKeyDown(KeyCode.E))
             {
-                string nameItem = hit.collider.GetComponent<ItemGrab>().Name;
-                textItem.text = nameItem;
-                textPressE.gameObject.SetActive(true);
-                if (Input.GetKeyDown(KeyCode.E))
-                {
-                    if (SecondItem.childCount == 1)
-                    {
-                        foreach (Transform trans in SecondItem.transform)
-                        {
-                            Transform item = Instantiate(trans, hit.point, Quaternion.identity);
-                            item.gameObject.AddComponent<Rigidbody>();
-                            Destroy(trans.gameObject);
-                        }
-
-                    }
-                    hit.collider.GetComponent<ItemGrab>().GrabItem(SecondItem);
-                    foreach (Transform trans in SecondItem.transform)
-                    {
-                        Destroy(trans.gameObject.GetComponent<Rigidbody>());
-                    }
-
-                }
-            } else if (hit.collider.GetComponent<ItemInteractable>())
-            {
-                string nameItem = hit.collider.GetComponent<ItemInteractable>().Name;
-                string useItem = hit.collider.GetComponent<ItemInteractable>().Use;
-                textItem.text = nameItem + " abre: " + useItem;
-                textPressE.gameObject.SetActive(true);
-                if (Input.GetKeyDown(KeyCode.E))
-                {
-                    hit.collider.GetComponent<ItemInteractable>().MoveObject();
-                }
-            } else if (hit.collider.GetComponent<RequireItem>())
-            {
-                string nameItem = hit.collider.GetComponent<RequireItem>().Name;
-                string Requirement = hit.collider.GetComponent<RequireItem>().Requirement;
-                textItem.text = nameItem + " requiere: " + Requirement;
-                textPressE.gameObject.SetActive(true);
-                if (Input.GetKeyDown(KeyCode.E))
-                {
-                    foreach(Transform trans in SecondItem.transform)
-                    {
-                        if (trans.GetComponent<ItemGrab>().Name == Requirement)
-                        {
-                            hit.collider.GetComponent<RequireItem>().MoveObject();
-                        }
-                    }
-
-                }
-
+                hit.collider.GetComponent<IInteractable>()?.Interact();
             }
+            hit.collider.GetComponent<IInteractable>()?.UI(textItem, textPressE);
+            Debug.DrawRay(playerCam.transform.position, playerCam.transform.forward * rayDistance, Color.red);
 
         }
 
         if (Physics.Raycast(playerCam.transform.position, playerCam.transform.forward, out hit))
         {
-            if (hit.collider.GetComponent<ItemGrab>() || hit.collider.GetComponent<ItemInteractable>() || hit.collider.GetComponent<RequireItem>())
-                Debug.Log("");
-            else
+            IInteractable interactable = hit.collider.GetComponent<IInteractable>();
+            if (interactable == null)
             {
-                textPressE.gameObject.SetActive(false);
                 textItem.text = "";
+                textPressE.gameObject.SetActive(false);
             }
         }
 
-        Debug.DrawRay(playerCam.transform.position, playerCam.transform.forward * rayDistance, Color.red);
     }
+    void orderInventory()
+    {
+        for (int i = 0; i < SecondItem.childCount; i++)
+        {
+            if (SecondItem.GetChild(i).gameObject != currenItem)
+            {
+                SecondItem.GetChild(i).gameObject.SetActive(false);
+            } else
+            {
+                SecondItem.GetChild(i).gameObject.SetActive(true);
+            }
 
+            if (arrayInventory[i] == null)
+            {
+                GameObject item = SecondItem.GetChild(i).gameObject;
+                arrayInventory[i] = item;
+            }
+
+        }
+
+    }
 }

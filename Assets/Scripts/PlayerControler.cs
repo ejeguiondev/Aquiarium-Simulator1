@@ -5,6 +5,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+public interface IItemTask
+{
+    bool completed { get; }
+    Task task { get; }
+}
+
 public class PlayerControler : MonoBehaviour
 {
     public TMP_Text textItem;
@@ -18,14 +24,19 @@ public class PlayerControler : MonoBehaviour
     public int rayDistance;
 
     public Rigidbody rg;
+    public bool moveBool;
 
     float walkSpeed = 8;
     float runSpeed = 15;
     bool run;
     public float jumpSpeed;
 
+    public GameObject List;
+    public GameObject Lanter;
     public GameObject ligthLanter;
+    bool ligth = true;
     bool lanter = true;
+    bool endListAnim = false;
 
     public Image staminaUI;
     float stamina = 1;
@@ -42,6 +53,7 @@ public class PlayerControler : MonoBehaviour
         rotacionSensibility = 700f;
         rg = GetComponent<Rigidbody>();
         arrayInventory = new GameObject[5];
+        moveBool = true;
 
         Cursor.lockState = CursorLockMode.Locked;
     }
@@ -56,15 +68,15 @@ public class PlayerControler : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.F))
         {
-            if (lanter == true)
+            if (ligth == true)
             {
                 ligthLanter.SetActive(false);
-                lanter = false;
+                ligth = false;
             }
             else
             {
                 ligthLanter.SetActive(true);
-                lanter = true;
+                ligth = true;
             }
         }
 
@@ -93,6 +105,27 @@ public class PlayerControler : MonoBehaviour
             
         }
 
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            if (lanter)
+            {
+                endListAnim = false;
+                StartCoroutine("EndListAnim");
+                List.SetActive(true);
+                List.transform.parent.GetComponent<Animator>().SetBool("List", true);
+                Lanter.SetActive(false);
+                lanter = false;
+            } else
+            {
+                if (endListAnim)
+                {
+                    List.transform.parent.GetComponent<Animator>().SetBool("List", false);
+                    List.transform.parent.GetComponent<Animator>().SetBool("EndList", true);
+                    StartCoroutine("EndList");
+                }
+            }
+        }
+
         for (int i = 0; i < 5; i++)
         {
             if (Input.GetKeyDown((i + 1).ToString()))
@@ -115,8 +148,18 @@ public class PlayerControler : MonoBehaviour
 
     private void FixedUpdate()
     {
-        move();
+        if (moveBool == true)
+        {
+            move();
+        } else
+        {
+            Vector3 velocity = Vector3.zero;
+            rg.velocity = velocity;
+            playerCam.GetComponent<Animator>().SetBool("Walk", false);
+            playerCam.GetComponent<Animator>().SetBool("Run", false);
+        }
         Look();
+
     }
 
     void Look()
@@ -249,5 +292,18 @@ public class PlayerControler : MonoBehaviour
 
         }
 
+    }
+    IEnumerator EndList()
+    {
+        yield return new WaitForSeconds(1.2f);
+        List.transform.parent.GetComponent<Animator>().SetBool("EndList", false);
+        List.SetActive(false);
+        Lanter.SetActive(true);
+        lanter = true;
+    }
+    IEnumerator EndListAnim()
+    {
+        yield return new WaitForSeconds(1f);
+        endListAnim = true;
     }
 }

@@ -32,11 +32,23 @@ public class Port : MonoBehaviour, IInteractable
         GameObject currentItem = secondItem.parent.parent.GetComponent<PlayerControler>()?.currenItem;
         if (currentItem != null)
         {
-            if (currentItem.GetComponent<IInteractable>().Name == Requirement)
+            if (Requirement == "nada")
             {
                 GetComponent<Animator>().SetBool("Open", true);
                 currentItem.transform.SetParent(currentItem.transform.parent);
                 Destroy(currentItem);
+            }
+            else if (currentItem.GetComponent<IInteractable>().Name == Requirement)
+            {
+                GetComponent<Animator>().SetBool("Open", true);
+                currentItem.transform.SetParent(currentItem.transform.parent);
+                Destroy(currentItem);
+            }
+        } else
+        {
+            if (Requirement == "nada")
+            {
+                GetComponent<Animator>().SetBool("Open", true);
             }
         }
 
@@ -44,7 +56,13 @@ public class Port : MonoBehaviour, IInteractable
 
     public void UI(TMP_Text text, TMP_Text pressE)
     {
-        text.text = Name + " requiere para abrirse: " + Requirement;
+        if (Requirement == "nada")
+        {
+            text.text = Name;
+        } else
+        {
+            text.text = Name + " requiere para abrirse: " + Requirement;
+        }
         pressE.gameObject.SetActive(true);
     }
 }

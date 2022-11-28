@@ -4902,15 +4902,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df53bca7c68652f47a2778a0f9062d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animator: {fileID: 876371051}
   playerControler: {fileID: 476686188}
   characterController: {fileID: 476686190}
   cam: {fileID: 876371050}
-  sinusHeight: 1
-  sinusSpeed: 1
-  sideBySideSpeed: 1
-  sideBySideHeight: 1
+  sinusHeight: 0.5
+  sinusSpeed: 3
+  sideBySideSpeed: 1.5
+  sideBySideHeight: 2
   offset: {x: 0, y: 0, z: 0}
-  swingSpeed: 1
+  swingSpeed: 5
 --- !u!1 &477869018
 GameObject:
   m_ObjectHideFlags: 0

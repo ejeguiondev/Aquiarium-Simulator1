@@ -58,14 +58,8 @@ public class PlayerControler : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Latern ()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && trigerGrounded.isGrounded)
-        {
-            rg.velocity = new Vector3(rg.velocity.x, jumpSpeed, rg.velocity.z);
-        }
-
         if (Input.GetKeyDown(KeyCode.F))
         {
             if (ligth == true)
@@ -79,31 +73,15 @@ public class PlayerControler : MonoBehaviour
                 ligth = true;
             }
         }
+    }
 
-        if (Input.GetKeyDown(KeyCode.Q) && SecondItem.childCount > 0)
-        {
-            if (currenItem != null)
-            {
-                GameObject item = Instantiate(currenItem.gameObject, transform.position + transform.forward, Quaternion.identity);
-                item.gameObject.AddComponent<Rigidbody>();
+    // Update is called once per frame
+    void Update()
+    {
+        Jump();
 
-                for (int i = 0; i < arrayInventory.Length; i++)
-                {
-                    arrayInventory[i] = null;
-                }
-
-                foreach (Transform trans in SecondItem.transform)
-                {
-                    if (trans.gameObject == currenItem)
-                    {
-                        trans.SetParent(SecondItem.parent);
-                        Destroy(trans.gameObject);
-                        break;
-                    }
-                }
-            }
-            
-        }
+        Latern();
+        Drop();
 
         if (Input.GetKeyDown(KeyCode.T))
         {
@@ -115,7 +93,8 @@ public class PlayerControler : MonoBehaviour
                 List.transform.parent.GetComponent<Animator>().SetBool("List", true);
                 Lanter.SetActive(false);
                 lanter = false;
-            } else
+            }
+            else
             {
                 if (endListAnim)
                 {
@@ -144,6 +123,42 @@ public class PlayerControler : MonoBehaviour
 
         detectedItem();
         orderInventory();
+    }
+
+    private void Jump()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && trigerGrounded.isGrounded)
+        {
+            rg.velocity = new Vector3(rg.velocity.x, jumpSpeed, rg.velocity.z);
+        }
+    }
+
+    private void Drop()
+    {
+        if (Input.GetKeyDown(KeyCode.Q) && SecondItem.childCount > 0)
+        {
+            if (currenItem != null)
+            {
+                GameObject item = Instantiate(currenItem.gameObject, transform.position + transform.forward, Quaternion.identity);
+                item.gameObject.AddComponent<Rigidbody>();
+
+                for (int i = 0; i < arrayInventory.Length; i++)
+                {
+                    arrayInventory[i] = null;
+                }
+
+                foreach (Transform trans in SecondItem.transform)
+                {
+                    if (trans.gameObject == currenItem)
+                    {
+                        trans.SetParent(SecondItem.parent);
+                        Destroy(trans.gameObject);
+                        break;
+                    }
+                }
+            }
+
+        }
     }
 
     private void FixedUpdate()
@@ -176,6 +191,11 @@ public class PlayerControler : MonoBehaviour
     }
     void move()
     {
+        if(!moveBool)
+        {
+            return;
+        }
+
         float hor = Input.GetAxisRaw("Horizontal");
         float ver = Input.GetAxisRaw("Vertical");
 
@@ -301,6 +321,7 @@ public class PlayerControler : MonoBehaviour
         Lanter.SetActive(true);
         lanter = true;
     }
+
     IEnumerator EndListAnim()
     {
         yield return new WaitForSeconds(1f);

@@ -7,35 +7,25 @@ public class NitghtControler : MonoBehaviour
 {
     public TMP_Text time;
     public Transform list;
-    public string[] nigthsTask;
-    public GameObject[] taskGameObjects;
-    public int nigth = 1;
-    string timeNumber;
+    public Transform nigthsGameObject;
+
+    int nigth = 0;
+    string[] nigthsTask;
+    GameObject[] nigths;
 
     private void Start()
     {
         nigthsTask = new string[list.childCount];
-        taskGameObjects = new GameObject[1];
+        nigths = new GameObject[nigthsGameObject.childCount];
+        nigth = 1;
     }
 
     private void Update()
     {
-        if (nigth == 1)
+        for (int i = 0; i < nigths.Length; i++)
         {
-            nigth1();
+            nigths[i] = nigthsGameObject.GetChild(0).gameObject;
         }
 
-        for (int i = 0; i < list.childCount; i++)
-        {
-            list.GetChild(i).gameObject.GetComponent<TMP_Text>().text = nigthsTask[i];
-        }
     }
-
-    void nigth1()
-    {
-        nigthsTask[0] = "Limpiar los cristales";
-        nigthsTask[1] = "Encender las luces de los tanques/peceras";
-        nigthsTask[2] = "Activar el mecanismo de las burbujas";
-    }
-
 }

@@ -75,8 +75,11 @@ public class PlayerControler : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
         Latern();
         Drop();
+        Jump();
 
         if (Input.GetKeyDown(KeyCode.T))
         {
@@ -99,6 +102,7 @@ public class PlayerControler : MonoBehaviour
                 }
             }
         }
+        
 
         for (int i = 0; i < 5; i++)
         {
@@ -118,6 +122,7 @@ public class PlayerControler : MonoBehaviour
 
         detectedItem();
         orderInventory();
+
     }
 
     private void Jump()

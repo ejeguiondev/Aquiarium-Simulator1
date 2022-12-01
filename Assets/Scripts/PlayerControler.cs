@@ -75,11 +75,6 @@ public class PlayerControler : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        Jump();
-
         Latern();
         Drop();
 

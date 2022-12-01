@@ -35,8 +35,6 @@ public class Port : MonoBehaviour, IInteractable
             if (Requirement == "nada")
             {
                 GetComponent<Animator>().SetBool("Open", true);
-                currentItem.transform.SetParent(currentItem.transform.parent);
-                Destroy(currentItem);
             }
             else if (currentItem.GetComponent<IInteractable>().Name == Requirement)
             {

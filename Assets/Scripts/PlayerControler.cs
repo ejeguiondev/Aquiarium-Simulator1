@@ -85,6 +85,7 @@ public class PlayerControler : MonoBehaviour
             if (currenItem != null)
             {
                 GameObject item = Instantiate(currenItem.gameObject, transform.position + transform.forward, Quaternion.identity);
+                item.transform.name = "Objecto";
                 item.gameObject.AddComponent<Rigidbody>();
 
                 for (int i = 0; i < arrayInventory.Length; i++)

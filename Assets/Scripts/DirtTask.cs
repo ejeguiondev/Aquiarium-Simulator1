@@ -49,6 +49,7 @@ public class DirtTask : MonoBehaviour, IItemTask, IInteractable
                 completed = true;
                 task.completedTask();
                 Destroy(GetComponent<MeshRenderer>());
+                Destroy(GetComponent<Collider>());
             }
         }
     }

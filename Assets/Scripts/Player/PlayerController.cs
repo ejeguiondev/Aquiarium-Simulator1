@@ -4,17 +4,9 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-
-public interface IItemTask
+//
+public class PlayerController : MonoBehaviour
 {
-    bool completed { get; }
-    Task task { get; }
-}
-
-public class PlayerControler : MonoBehaviour
-{
-    public TMP_Text textItem;
-    public TMP_Text textPressE;
     public Transform SecondItem;
     public Camera playerCam;
     public Vector3 rotateInput = Vector3.zero;
@@ -31,97 +23,83 @@ public class PlayerControler : MonoBehaviour
     bool run;
     public float jumpSpeed;
 
-    public GameObject List;
-    public GameObject Lanter;
-    public GameObject ligthLanter;
-    bool ligth = true;
-    bool lanter = true;
+    public GameObject List; // Lista
+
+    public Latern latern;
+
+    bool lightOn = true;
+    bool onLatern = true;
     bool endListAnim = false;
 
     public Image staminaUI;
     float stamina = 1;
     float counterStamina = 0;
 
-    public GameObject[] arrayInventory;
-    public GameObject currenItem;
-    public int numberItem = 0;
-    public int numberSlots = 5;
+    private SelectionManager selectionManager;
 
     // Start is called before the first frame update
     void Start()
     {
+        selectionManager = GetComponent<SelectionManager>();
+
         rotacionSensibility = 700f;
         rg = GetComponent<Rigidbody>();
-        arrayInventory = new GameObject[5];
         moveBool = true;
 
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    private void Latern ()
+    private void Latern()
     {
-        if (Input.GetKeyDown(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.F) && !List.activeInHierarchy)
         {
-            if (ligth == true)
-            {
-                ligthLanter.SetActive(false);
-                ligth = false;
-            }
-            else
-            {
-                ligthLanter.SetActive(true);
-                ligth = true;
-            }
+            latern?.Toggle();
         }
     }
 
     private void Update()
     {
         Latern();
-        Drop();
         Jump();
 
+        // Alternar entre la linterna y lista
+
+        // Al presionar la letra 't'
         if (Input.GetKeyDown(KeyCode.T))
         {
-            if (lanter)
+            // Si la linterna esta en uso
+            if (onLatern)
             {
+                // La animacion de guardado de la lista no ha terminado
                 endListAnim = false;
+                // Iniciar corotunia del f
                 StartCoroutine("EndListAnim");
+                // Activar lista
                 List.SetActive(true);
+                // Activar la animacion del padre de la lista
                 List.transform.parent.GetComponent<Animator>().SetBool("List", true);
-                Lanter.SetActive(false);
-                lanter = false;
+                // Desactivar la linterna
+                latern.gameObject.SetActive(false);
+                // La linterna no estara en uso
+                onLatern = false;
             }
+            // Por el contrario, si la linterna no estaa en uso
             else
             {
+                // Si la animacion de guardado de la lista no ha terminado
                 if (endListAnim)
                 {
+                    //
                     List.transform.parent.GetComponent<Animator>().SetBool("List", false);
                     List.transform.parent.GetComponent<Animator>().SetBool("EndList", true);
+                    // Iniciar corutina
                     StartCoroutine("EndList");
                 }
             }
         }
-        
-
-        for (int i = 0; i < 5; i++)
-        {
-            if (Input.GetKeyDown((i + 1).ToString()))
-            {
-                numberItem = i;
-            }
-        }
-
-        for (int i = 0; i < arrayInventory.Length; i++)
-        {
-            if (arrayInventory[i] == arrayInventory[numberItem])
-            {
-                currenItem = arrayInventory[i];
-            }
-        }
 
         detectedItem();
-        orderInventory();
+        //orderInventory();
 
     }
 
@@ -133,40 +111,13 @@ public class PlayerControler : MonoBehaviour
         }
     }
 
-    private void Drop()
-    {
-        if (Input.GetKeyDown(KeyCode.Q) && SecondItem.childCount > 0)
-        {
-            if (currenItem != null)
-            {
-                GameObject item = Instantiate(currenItem.gameObject, transform.position + transform.forward, Quaternion.identity);
-                item.gameObject.AddComponent<Rigidbody>();
-
-                for (int i = 0; i < arrayInventory.Length; i++)
-                {
-                    arrayInventory[i] = null;
-                }
-
-                foreach (Transform trans in SecondItem.transform)
-                {
-                    if (trans.gameObject == currenItem)
-                    {
-                        trans.SetParent(SecondItem.parent);
-                        Destroy(trans.gameObject);
-                        break;
-                    }
-                }
-            }
-
-        }
-    }
-
     private void FixedUpdate()
     {
         if (moveBool == true)
         {
             move();
-        } else
+        }
+        else
         {
             Vector3 velocity = Vector3.zero;
             rg.velocity = velocity;
@@ -180,8 +131,8 @@ public class PlayerControler : MonoBehaviour
     void Look()
     {
         // agarrar el angulo X e Y
-        rotateInput.x = Input.GetAxis("Mouse X") * rotacionSensibility * Time.deltaTime;
-        rotateInput.y = Input.GetAxis("Mouse Y") * rotacionSensibility * Time.deltaTime;
+        rotateInput.x = Input.GetAxis("Mouse X") * rotacionSensibility * Time.fixedDeltaTime;
+        rotateInput.y = Input.GetAxis("Mouse Y") * rotacionSensibility * Time.fixedDeltaTime;
         // hacer que no se pase de vista mirando hacia arriba
         camVerticalAngle += rotateInput.y;
         camVerticalAngle = Mathf.Clamp(camVerticalAngle, -70, 70);
@@ -191,7 +142,7 @@ public class PlayerControler : MonoBehaviour
     }
     void move()
     {
-        if(!moveBool)
+        if (!moveBool)
         {
             return;
         }
@@ -201,12 +152,12 @@ public class PlayerControler : MonoBehaviour
 
         Vector3 velocity = Vector3.zero;
 
-        Vector3 direccion = (transform.forward * ver + transform.right * hor).normalized;
+        Vector3 direction = (transform.forward * ver + transform.right * hor).normalized;
         if (hor != 0 || ver != 0)
         {
             if (!run)
             {
-                velocity = direccion * walkSpeed;
+                velocity = direction * walkSpeed;
                 playerCam.GetComponent<Animator>().SetBool("Walk", true);
                 playerCam.GetComponent<Animator>().SetBool("Run", false);
             }
@@ -214,7 +165,7 @@ public class PlayerControler : MonoBehaviour
             {
                 if (stamina < 0.01f)
                 {
-                    velocity = direccion * walkSpeed;
+                    velocity = direction * walkSpeed;
                     playerCam.GetComponent<Animator>().SetBool("Walk", true);
                     playerCam.GetComponent<Animator>().SetBool("Run", false);
 
@@ -222,7 +173,7 @@ public class PlayerControler : MonoBehaviour
                 }
                 else
                 {
-                    velocity = direccion * runSpeed;
+                    velocity = direction * runSpeed;
                     playerCam.GetComponent<Animator>().SetBool("Run", true);
                     playerCam.GetComponent<Animator>().SetBool("Walk", false);
                 }
@@ -269,57 +220,19 @@ public class PlayerControler : MonoBehaviour
 
     void detectedItem()
     {
-        RaycastHit hit;
-        if (Physics.Raycast(playerCam.transform.position, playerCam.transform.forward, out hit, rayDistance))
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                hit.collider.GetComponent<IInteractable>()?.Interact();
-            }
-            hit.collider.GetComponent<IInteractable>()?.UI(textItem, textPressE);
-            Debug.DrawRay(playerCam.transform.position, playerCam.transform.forward * rayDistance, Color.red);
-
+            selectionManager.selection?.GetComponent<IInteractable>()?.Interact();
         }
-
-        if (Physics.Raycast(playerCam.transform.position, playerCam.transform.forward, out hit))
-        {
-            IInteractable interactable = hit.collider.GetComponent<IInteractable>();
-            if (interactable == null)
-            {
-                textItem.text = "";
-                textPressE.gameObject.SetActive(false);
-            }
-        }
-
     }
-    void orderInventory()
-    {
-        for (int i = 0; i < SecondItem.childCount; i++)
-        {
-            if (SecondItem.GetChild(i).gameObject != currenItem)
-            {
-                SecondItem.GetChild(i).gameObject.SetActive(false);
-            } else
-            {
-                SecondItem.GetChild(i).gameObject.SetActive(true);
-            }
 
-            if (arrayInventory[i] == null)
-            {
-                GameObject item = SecondItem.GetChild(i).gameObject;
-                arrayInventory[i] = item;
-            }
-
-        }
-
-    }
     IEnumerator EndList()
     {
         yield return new WaitForSeconds(1.2f);
         List.transform.parent.GetComponent<Animator>().SetBool("EndList", false);
-        List.SetActive(false);
-        Lanter.SetActive(true);
-        lanter = true;
+        List.SetActive(false); // Desactivar lista
+        latern.gameObject.SetActive(true); // Activar linterna
+        onLatern = true; // La linterna esta en uso
     }
 
     IEnumerator EndListAnim()

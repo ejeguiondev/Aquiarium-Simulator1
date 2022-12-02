@@ -6,7 +6,7 @@ using TMPro;
 
 public class SlotsUI : MonoBehaviour
 {
-    public PlayerControler playerScript;
+    public Inventory playerScript;
 
     private void Update()
     {

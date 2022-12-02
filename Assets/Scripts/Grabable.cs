@@ -34,18 +34,17 @@ public class Grabable : MonoBehaviour, IInteractable
     {
         if (secondItem.childCount != 5)
         {
-            transform.position = new Vector3(0, 0, 0);
-            transform.rotation = new Quaternion(0, 0, 0, 0);
-            GameObject newKey = Instantiate(gameObject, secondItem);
-            Destroy(newKey.GetComponent<Rigidbody>());
+            GameObject grabable = gameObject;
 
-            Destroy(gameObject);
+            grabable.GetComponent<Rigidbody>().isKinematic = true;
+            grabable.GetComponent<Collider>().enabled = false;
 
-            foreach (Transform trans in secondItem)
-            {
-                Destroy(trans.gameObject.GetComponent<Rigidbody>());
-            }
-        } else
+            grabable.transform.SetParent(secondItem);
+
+            grabable.transform.localPosition = Vector3.zero;
+            grabable.transform.localRotation = Quaternion.identity;
+        } 
+        else
         {
             Debug.Log("sin espacio!");
         }

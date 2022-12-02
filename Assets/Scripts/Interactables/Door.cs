@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class Port : MonoBehaviour, IInteractable
+public class Door : MonoBehaviour, IInteractable
 {
     public string Name
     {
@@ -29,7 +29,7 @@ public class Port : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        GameObject currentItem = secondItem.parent.parent.GetComponent<PlayerControler>()?.currenItem;
+        GameObject currentItem = secondItem.parent.parent.GetComponent<Inventory>()?.currenItem;
         if (currentItem != null)
         {
             if (Requirement == "nada")

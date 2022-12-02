@@ -5,7 +5,7 @@ using UnityEngine;
 public class Swim : MonoBehaviour
 {
     [SerializeField] private Animator animator;
-    [SerializeField] private PlayerControler playerControler;
+    [SerializeField] private PlayerController playerControler;
 
     [SerializeField] private CharacterController characterController;
 
@@ -59,7 +59,7 @@ public class Swim : MonoBehaviour
         playerControler.moveBool = false;
         playerControler.rg.isKinematic = true;
         playerControler.rg.useGravity = false;
-        animator.enabled = false;
+        animator.enabled = false; 
     }
 
     private void OnTriggerExit (Collider collider)

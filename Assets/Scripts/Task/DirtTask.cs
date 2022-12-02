@@ -41,7 +41,7 @@ public class DirtTask : MonoBehaviour, IItemTask, IInteractable
     
     public void Interact()
     {
-        GameObject currentItem = secondItem.parent.parent.GetComponent<PlayerControler>()?.currenItem;
+        GameObject currentItem = secondItem.parent.parent.GetComponent<Inventory>()?.currenItem;
         if (currentItem != null)
         {
             if (currentItem.GetComponent<IInteractable>().Name == Requirement)

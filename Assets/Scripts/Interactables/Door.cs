@@ -59,7 +59,7 @@ public class Door : MonoBehaviour, IInteractable
             text.text = Name;
         } else
         {
-            text.text = Name + " requiere para abrirse: " + Requirement;
+            text.text = Name;
         }
         pressE.gameObject.SetActive(true);
     }

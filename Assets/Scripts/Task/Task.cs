@@ -16,6 +16,8 @@ public class Task : MonoBehaviour
         {
             usingGameObject[i].SetActive(true);
         }
+        if (completed)
+            completedTaskList.SetActive(true);
     }
     public void completedTask()
     {

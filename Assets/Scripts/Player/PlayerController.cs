@@ -24,6 +24,8 @@ public class PlayerController : MonoBehaviour
     public float jumpSpeed;
 
     public GameObject List; // Lista
+    public GameObject map;
+    bool mapBool;
 
     public Latern latern;
 
@@ -95,6 +97,19 @@ public class PlayerController : MonoBehaviour
                     // Iniciar corutina
                     StartCoroutine("EndList");
                 }
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            if (mapBool)
+            {
+                mapBool = false;
+                map.SetActive(false);
+            }
+            else
+            {
+                mapBool = true;
+                map.SetActive(true);
             }
         }
 

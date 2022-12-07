@@ -8,6 +8,7 @@ public class NightController : MonoBehaviour
     public TMP_Text time;
     public Transform list;
     public Transform nigthsGameObject;
+    public GameObject player;
 
     GameObject[] nightArray;
     GameObject[] currentNightTasks;
@@ -32,11 +33,11 @@ public class NightController : MonoBehaviour
         {
             if (nightArray[i].gameObject == nightArray[nigth - 1].gameObject)
             {
-                nightArray[i].gameObject.SetActive(true);
+                nightArray[i].gameObject.GetComponent<Nigth>().active = true;
             }
             else
             {
-                nightArray[i].gameObject.SetActive(false);
+                nightArray[i].gameObject.GetComponent<Nigth>().active = false;
             }
         }
     }
@@ -60,10 +61,11 @@ public class NightController : MonoBehaviour
         {
             if (nightArray[i].gameObject == nightArray[nigth - 1].gameObject)
             {
-                nightArray[i].gameObject.SetActive(true);
-            }else
+                nightArray[i].gameObject.GetComponent<Nigth>().active = true;
+            }
+            else
             {
-                nightArray[i].gameObject.SetActive(false);
+                nightArray[i].gameObject.GetComponent<Nigth>().active = false;
             }
         }
 
@@ -93,6 +95,7 @@ public class NightController : MonoBehaviour
         if (completedNigth)
         {
             nigth += 1;
+            player.transform.position = new Vector3(0f, 1f, 0f);
             return;
         }
 

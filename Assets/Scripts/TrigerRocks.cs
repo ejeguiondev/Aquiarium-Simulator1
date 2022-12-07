@@ -3,8 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class Door : MonoBehaviour, IInteractable
+public class TrigerRocks : MonoBehaviour, IInteractable, IItemTask
 {
+    public bool completed
+    {
+        get;
+        private set;
+    }
+    public Task task
+    {
+        get;
+        private set;
+    }
     public string Name
     {
         get;
@@ -16,11 +26,12 @@ public class Door : MonoBehaviour, IInteractable
         private set;
     }
 
-
+    public Rigidbody rb;
     public Transform secondItem;
+    public Sprite icon;
+
     public string NameReal;
     public string RequirementReal;
-    public Inventory inventory;
 
     private void Start()
     {
@@ -35,28 +46,23 @@ public class Door : MonoBehaviour, IInteractable
         {
             if (Requirement == "nada")
             {
-                GetComponent<Animator>().SetBool("Open", true);
+                completed = true;
+                Destroy(GetComponent<Collider>());
             }
             else if (currentItem.GetComponent<IInteractable>().Name == Requirement)
             {
-                GetComponent<Animator>().SetBool("Open", true);
-                for (int i = 0; i < inventory.arrayInventory.Length; i++)
-                {
-                    if (inventory.arrayInventory[i] == currentItem)
-                    {
-                        GameObject drop = (inventory.arrayInventory[i]);
-                        drop.transform.parent = null;
-                        inventory.arrayInventory[i] = null;
-                        Destroy(drop);
-                    }
-                }
-
+                completed = true;
+                Destroy(GetComponent<Collider>());
+                currentItem.transform.SetParent(currentItem.transform.parent);
+                Destroy(currentItem);
             }
-        } else
+        }
+        else
         {
             if (Requirement == "nada")
             {
-                GetComponent<Animator>().SetBool("Open", true);
+                completed = true;
+                Destroy(GetComponent<Collider>());
             }
         }
 
@@ -64,13 +70,8 @@ public class Door : MonoBehaviour, IInteractable
 
     public void UI(TMP_Text text, TMP_Text pressE)
     {
-        if (Requirement == "nada")
-        {
-            text.text = Name;
-        } else
-        {
-            text.text = Name;
-        }
+        text.text = "Poner rocas";
         pressE.gameObject.SetActive(true);
     }
+
 }

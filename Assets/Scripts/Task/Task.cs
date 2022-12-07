@@ -9,7 +9,10 @@ public class Task : MonoBehaviour
     public GameObject[] usingGameObject;
     public GameObject completedTaskList;
 
-
+    private void Start()
+    {
+        completedTaskList.SetActive(false);
+    }
     private void Update()
     {
         for (int i = 0; i < usingGameObject.Length; i++)

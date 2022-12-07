@@ -61,7 +61,6 @@ public class Inventory : MonoBehaviour
             }
         }
 
-        //  
         for (int i = 0; i < arrayInventory.Length; i++)
         {
             if (arrayInventory[i] == arrayInventory[numberItem])
@@ -90,6 +89,15 @@ public class Inventory : MonoBehaviour
                 arrayInventory[i] = item;
             }
 
+        }
+
+        for (int i = 0; i < arrayInventory.Length; i++)
+        {
+            for (int j = i + 1; j < arrayInventory.Length; j++)
+            {
+                if (arrayInventory[i] == arrayInventory[j])
+                    arrayInventory[j] = null;
+            }
         }
 
     }

@@ -5168,7 +5168,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &408534403
 Transform:
   m_ObjectHideFlags: 0
@@ -5612,7 +5612,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   completed: 0
   Name: Poner piedras en el fondo de los tanques
-  usingGameObject: []
+  usingGameObject:
+  - {fileID: 1256778549}
   completedTaskList: {fileID: 1137291983}
 --- !u!1 &435689423
 GameObject:
@@ -12666,7 +12667,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 876371047}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 948f4100a11a5c24981795d21301da5c, type: 3}
   m_Name: 
@@ -23577,7 +23578,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1256778550
 Transform:
   m_ObjectHideFlags: 0
@@ -23604,8 +23605,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 56.493202, y: 10.339231, z: 40.828217}
-  m_Center: {x: -4.785755, y: 4.6696153, z: 0.6030731}
+  m_Size: {x: 56.493202, y: 3.5739374, z: 40.828217}
+  m_Center: {x: -4.785755, y: 1.2869687, z: 0.6030731}
 --- !u!114 &1256778552
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38470,6 +38471,7 @@ MonoBehaviour:
   - {fileID: 2118813102}
   - {fileID: 1573304571}
   - {fileID: 23353832}
+  - {fileID: 1256778549}
   gameObjectsInactive:
   - {fileID: 1601006665}
   - {fileID: 1628377645}
@@ -38480,6 +38482,11 @@ MonoBehaviour:
   - {fileID: 1895165492}
   - {fileID: 646967203}
   - {fileID: 1933522229}
+  - {fileID: 71555598}
+  - {fileID: 1137291983}
+  - {fileID: 2124751397}
+  - {fileID: 677785213}
+  - {fileID: 2102094784}
 --- !u!1 &1824412599
 GameObject:
   m_ObjectHideFlags: 0
